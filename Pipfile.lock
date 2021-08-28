@@ -1,0 +1,25 @@
+{
+    "_meta": {
+        "hash": {
+            "sha256": "a60e565781bb2229fda1a0bdc7cd13d182d7b8cc3dec7581ff19013beba1b170"
+        },
+        "pipfile-spec": 6,
+        "requires": {
+            "python_version": "3.8"
+        },
+        "sources": [
+            {
+                "name": "pypi",
+                "url": "https://pypi.org/simple",
+                "verify_ssl": true
+            }
+        ]
+    },
+    "default": {
+        "pixelsorter": {
+            "path": "./PixelSorter",
+            "version": "==0.1"
+        }
+    },
+    "develop": {}
+}

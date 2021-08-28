@@ -1,0 +1,3 @@
+[submodule "PixelSorter"]
+	path = PixelSorter
+	url = https://github.com/squaregoldfish/PixelSorter.git
