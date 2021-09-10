@@ -136,3 +136,5 @@ config.toml
 
 # Uploaded files
 uploads/*
+
+lastsorted.dat
