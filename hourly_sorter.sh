@@ -1,5 +1,7 @@
 #!/bin/bash
 
+MAX_CHANGED_PIXELS=103680
+
 # Get the requested minute
 NUMCHECK='^[0-9]+$'
 minute=$1
@@ -51,10 +53,10 @@ then
 
       if [ -f $lastsorted ]
       then
-        changedpixels=`compare -metric AE $lastsorted $lastshot null:`
+        changedpixels=`compare -metric AE $lastsorted $lastshot null: 2>&1`
       fi
 
-      if [[ $changedpixels < 100000 ]]
+      if [ "$changedpixels" -lt "$MAX_CHANGED_PIXELS" ]
       then
         munge=0
       fi
