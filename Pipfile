@@ -5,6 +5,7 @@ name = "pypi"
 
 [packages]
 pixelsorter = {path = "./PixelSorter"}
+opencv-python = "*"
 
 [dev-packages]
 
