@@ -3,6 +3,9 @@ import os
 import re
 import cv2
 import FrameColours
+from multiprocessing.managers import BaseManager
+from multiprocessing import Pool
+from itertools import repeat
 
 
 def get_minute(file_name):
@@ -13,9 +16,15 @@ def get_minute(file_name):
     return (hour * 60) + minute
 
 
-def get_average_pixel(file):
-    image = cv2.imread(file)
+def get_average_pixel(img_file):
+    image = cv2.imread(img_file)
     return FrameColours.average_pixel(image)
+
+
+def process_frame(frame_file, avg_pixels):
+    minute_of_day = get_minute(frame_file)
+    pixel = get_average_pixel(os.path.join(args.image_dir, frame_file))
+    avg_pixels.set_frame(minute_of_day, pixel)
 
 
 parser = argparse.ArgumentParser(description='Generate an average pixel image for a day\'s worth of screen grabs')
@@ -25,11 +34,12 @@ args = parser.parse_args()
 
 file_prefix = os.path.basename(args.image_dir)
 
-average_pixels = FrameColours.FrameColours(1440)
+BaseManager.register('FrameColours', FrameColours.FrameColours)
+manager = BaseManager()
+manager.start()
+average_pixels = manager.FrameColours(1440)
 
-for file in os.listdir(args.image_dir):
-    minute_of_day = get_minute(file)
-    pixel = get_average_pixel(os.path.join(args.image_dir, file))
-    average_pixels.set_frame(minute_of_day, pixel)
+pool = Pool()
+pool.starmap(process_frame, zip(os.listdir(args.image_dir), repeat(average_pixels)))
 
-average_pixels.write_image(1080, args.out_file)
+average_pixels.write_image(720, args.out_file)

@@ -137,4 +137,6 @@ config.toml
 # Uploaded files
 uploads/*
 
-lastsorted.dat
+# Images and other transient data
+last_sorted.dat
+*.png

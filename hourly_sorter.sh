@@ -3,72 +3,72 @@
 MAX_CHANGED_PIXELS=103680
 
 # Get the requested minute
-NUMCHECK='^[0-9]+$'
+NUM_CHECK='^[0-9]+$'
 minute=$1
 
-if ! [[ $minute =~ $NUMCHECK ]]
+if ! [[ $minute =~ $NUM_CHECK ]]
 then
    minute=0
 fi
 
-if [[ $minute < 0 ]]
+if [[ $minute -lt 0 ]]
 then
   minute=0
 fi
 
-if [[ $minute > 59 ]]
+if [[ $minute -gt 59 ]]
 then
   minute=59
 fi
 
 # Zero pad
-minute=`printf "%02d" $minute`
+minute=$(printf "%02d" $minute)
 
 # Get the last image we processed
-lastsorted=""
+last_sorted=""
 
-if [[ -e "lastsorted.dat" ]]
+if [[ -e "last_sorted.dat" ]]
 then
-    lastsorted=`cat lastsorted.dat`
+    last_sorted=$(cat last_sorted.dat)
 fi
 
 # Get the latest image for the specified minute
 # We won't cross the day threshold
-lastshotdir="uploads/`date '+%Y%m%d'`"
-lastshot=`ls -tr ${lastshotdir}/*${minute}00.png|tail -1`
+last_shot_dir="uploads/$(date '+%Y%m%d')"
+last_shot=$(find "${last_shot_dir}"/*"${minute}"00.png|sort|tail -1)
 
 # If there's an image
-if [ -n "$lastshot" ]
+if [ -n "$last_shot" ]
 then
   # See if we're doing a new image
-  if [[ "$lastshot" != "$lastsorted" ]]
+  if [[ "$last_shot" != "$last_sorted" ]]
   then
     # Make sure the image has changed enough to justify
-    # a new munge
-    munge=1
+    # a new process
+    process=1
 
-    if [ -n "$lastsorted" ]
+    if [ -n "$last_sorted" ]
     then
-      changedpixels=0
+      changed_pixels=0
 
-      if [ -f $lastsorted ]
+      if [ -f "$last_sorted" ]
       then
-        changedpixels=`compare -metric AE $lastsorted $lastshot null: 2>&1`
+        changed_pixels=$(compare -metric AE "$last_sorted" "$last_shot" null: 2>&1)
       fi
 
-      if [ "$changedpixels" -lt "$MAX_CHANGED_PIXELS" ]
+      if [ "$changed_pixels" -lt "$MAX_CHANGED_PIXELS" ]
       then
-        munge=0
+        process=0
       fi
     fi
 
-    if [[ $munge == 1 ]]
+    if [[ $process == 1 ]]
     then
-      filename=`basename $lastshot`
-      pipenv run python sort_image.py $lastshot "A screenshot with pixels sorted by random criteria" "${filename:0:4}-${filename:4:2}-${filename:6:2} ${filename:8:2}:${filename:10:2}:${filename:12:2}"
+      filename=$(basename "$last_shot")
+      pipenv run python sort_image.py "$last_shot" "A screenshot with pixels sorted by random criteria" "${filename:0:4}-${filename:4:2}-${filename:6:2} ${filename:8:2}:${filename:10:2}:${filename:12:2}"
 
       # Log the sorted file
-      echo "$lastshot" > lastsorted.dat
+      echo "$last_shot" > last_sorted.dat
     fi
   fi
 fi
