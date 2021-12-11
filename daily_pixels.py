@@ -1,11 +1,13 @@
 import argparse
 import os
+import tempfile
 import re
 import cv2
 import FrameColours
 from multiprocessing.managers import BaseManager
 from multiprocessing import Pool
 from itertools import repeat
+from postimage import post_image
 
 
 def get_minute(file_name):
@@ -29,7 +31,8 @@ def process_frame(frame_file, avg_pixels):
 
 parser = argparse.ArgumentParser(description='Generate an average pixel image for a day\'s worth of screen grabs')
 parser.add_argument('image_dir', help='Directory containing screen grabs')
-parser.add_argument('out_file', help='Output file')
+parser.add_argument('toot', help='Toot text')
+parser.add_argument('alt', help='Alt text')
 args = parser.parse_args()
 
 file_prefix = os.path.basename(args.image_dir)
@@ -42,4 +45,9 @@ average_pixels = manager.FrameColours(1440)
 pool = Pool()
 pool.starmap(process_frame, zip(os.listdir(args.image_dir), repeat(average_pixels)))
 
-average_pixels.write_image(720, args.out_file)
+temp_file = f'{os.path.join(tempfile.gettempdir(), args.toot)}.png'
+average_pixels.write_image(720, temp_file)
+
+post_image(temp_file, args.alt, args.toot)
+
+os.remove(temp_file)
