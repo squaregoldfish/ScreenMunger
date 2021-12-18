@@ -1,20 +1,25 @@
 import argparse
 import os
-import tempfile
 from math import floor
 import FrameColours
 from multiprocessing.managers import BaseManager
 from multiprocessing import Pool
 from itertools import repeat
-from postimage import post_image
 from moviepy.editor import VideoFileClip
 import numpy as np
 from io import BytesIO
 
+OUT_DIR='./uploads/video'
 
 parser = argparse.ArgumentParser(description='Generate an average pixel image for each frame of a video')
 parser.add_argument('video', help='Video file')
 args = parser.parse_args()
+
+title = os.path.splitext(os.path.basename(args.video))[0]
+print(f'Default title: {title}')
+custom_title = input('Enter alternative title if desired: ').strip()
+if custom_title != '':
+    title = custom_title
 
 video_clip = VideoFileClip(args.video)
 
@@ -28,9 +33,4 @@ for frame in extract_frames:
     output.set_frame(current_frame, FrameColours.average_pixel(video_clip.get_frame(frame)))
     current_frame += 1
 
-output.write_image(floor(frame_count / 8), os.path.join(tempfile.gettempdir(), 'frames.png'))
-
-#
-# post_image(temp_file, args.alt, args.toot)
-#
-# os.remove(temp_file)
+output.write_image(floor(frame_count / 8), os.path.join(OUT_DIR, f'{title}.png'))
