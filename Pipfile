@@ -8,6 +8,7 @@ pixelsorter = {path = "./PixelSorter"}
 opencv-python = "*"
 moviepy = "*"
 numpy = "*"
+awesome-progress-bar = "*"
 
 [dev-packages]
 

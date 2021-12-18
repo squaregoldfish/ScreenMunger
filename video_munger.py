@@ -8,6 +8,7 @@ from itertools import repeat
 from moviepy.editor import VideoFileClip
 import numpy as np
 from io import BytesIO
+from awesome_progress_bar import ProgressBar
 
 OUT_DIR='./uploads/video'
 
@@ -27,10 +28,12 @@ extract_frames = np.arange(0, video_clip.duration, 0.1)
 frame_count = len(extract_frames)
 output = FrameColours.FrameColours(frame_count)
 
+bar = ProgressBar(frame_count, prefix=title, use_spinner=False, use_eta=True)
 current_frame = 0
 for frame in extract_frames:
     frame_jpg = BytesIO()
     output.set_frame(current_frame, FrameColours.average_pixel(video_clip.get_frame(frame)))
+    bar.iter()
     current_frame += 1
 
 output.write_image(floor(frame_count / 8), os.path.join(OUT_DIR, f'{title}.png'))
