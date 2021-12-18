@@ -1,5 +1,6 @@
 import numpy as np
 import cv2
+from math import floor
 
 
 def average_pixel(image):
@@ -15,6 +16,12 @@ class FrameColours:
         self.pixels[:, frame, :] = colour
 
     def write_image(self, height, file):
-        image = cv2.resize(self.pixels, (self.frames, height), interpolation=cv2.INTER_CUBIC)
+        # Height is 1/8th of width
+        ratio_height = self.frames / 8
+
+        # Ratio to get image of correct aspect ratio to 720px
+        final_height_ratio = 1 if ratio_height < 720 else 720 / ratio_height
+
+        image = cv2.resize(self.pixels, (floor(self.frames * final_height_ratio), 720), interpolation=cv2.INTER_CUBIC)
         cv2.imwrite(file, image)
 
