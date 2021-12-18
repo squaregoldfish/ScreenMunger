@@ -4,7 +4,8 @@ from math import floor
 
 
 def average_pixel(image):
-    return np.average(image, axis=(0, 1))
+    average_backwards = np.average(image, axis=(0, 1))
+    return [average_backwards[2], average_backwards[1], average_backwards[0]]
 
 
 class FrameColours:
