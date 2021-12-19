@@ -71,8 +71,11 @@ then
       echo "$last_shot" > last_sorted.dat
     else
       vidfile=`ls -t uploads/video |tail -1`
-      pipenv run python postimage.py "uploads/video/$vidfile" "Sequence of stripes showing the average pixel colour of a frame of a video every 0.1 seconds"
-      rm "uploads/video/$vidfile"
+      if [ -n "$vidfile" ]
+      then
+        pipenv run python postimage.py "uploads/video/$vidfile" "Sequence of stripes showing the average pixel colour of a frame of a video every 0.1 seconds"
+        rm "uploads/video/$vidfile"
+      fi
     fi
   fi
 fi
