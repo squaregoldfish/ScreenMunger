@@ -3,9 +3,12 @@ import cv2
 from math import floor
 
 
-def average_pixel(image):
+def average_pixel(image, rgb_backwards=False):
     average_backwards = np.average(image, axis=(0, 1))
-    return [average_backwards[2], average_backwards[1], average_backwards[0]]
+    if rgb_backwards:
+        return [average_backwards[2], average_backwards[1], average_backwards[0]]
+    else:
+        return [average_backwards[0], average_backwards[1], average_backwards[2]]
 
 
 class FrameColours:
@@ -25,4 +28,3 @@ class FrameColours:
 
         image = cv2.resize(self.pixels, (floor(self.frames * final_height_ratio), 720), interpolation=cv2.INTER_CUBIC)
         cv2.imwrite(file, image)
-
