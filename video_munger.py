@@ -38,6 +38,7 @@ for frame in extract_frames:
 
 output.write_image(floor(frame_count / 8), os.path.join(OUT_DIR, f'{title}.png'))
 
-delete_file = input('Delete source video file? ')
-if delete_file.lower() == 'y':
-    os.remove(args.video)
+if 'YouTube' in args.video:
+    delete_file = input('Delete source video file? ')
+    if delete_file.lower() == 'y':
+        os.remove(args.video)
