@@ -31,7 +31,6 @@ output = FrameColours.FrameColours(frame_count)
 bar = ProgressBar(frame_count, prefix=title, use_spinner=False, use_eta=True)
 current_frame = 0
 for frame in extract_frames:
-    frame_jpg = BytesIO()
     output.set_frame(current_frame, FrameColours.average_pixel(video_clip.get_frame(frame), True))
     bar.iter()
     current_frame += 1
