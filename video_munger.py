@@ -24,7 +24,7 @@ if custom_title != '':
 
 video_clip = VideoFileClip(args.video)
 
-extract_frames = np.arange(0, video_clip.duration, 0.1)
+extract_frames = np.arange(0, floor(video_clip.duration), 0.1)
 frame_count = len(extract_frames)
 output = FrameColours.FrameColours(frame_count)
 
