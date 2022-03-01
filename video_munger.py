@@ -2,12 +2,8 @@ import argparse
 import os
 from math import floor
 import FrameColours
-from multiprocessing.managers import BaseManager
-from multiprocessing import Pool
-from itertools import repeat
 from moviepy.editor import VideoFileClip
 import numpy as np
-from io import BytesIO
 from awesome_progress_bar import ProgressBar
 
 OUT_DIR='./uploads/video'
