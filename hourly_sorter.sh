@@ -65,7 +65,7 @@ then
     if [[ $process == 1 ]]
     then
       filename=$(basename "$last_shot")
-      pipenv run python sort_image.py "$last_shot" "A screenshot with pixels sorted by random criteria" "${filename:0:4}-${filename:4:2}-${filename:6:2} ${filename:8:2}:${filename:10:2}:${filename:12:2}"
+      pipenv run python sort_image.py "$last_shot" "A screenshot with pixels sorted by random criteria" "${filename:0:4}-${filename:4:2}-${filename:6:2} ${filename:8:2}:${filename:10:2}:${filename:12:2} #glitch"
 
       # Log the sorted file
       echo "$last_shot" > last_sorted.dat
@@ -73,9 +73,11 @@ then
       vidfile=`ls -t uploads/video |tail -1`
       if [ -n "$vidfile" ]
       then
-        pipenv run python postimage.py "uploads/video/$vidfile" "Sequence of stripes showing the average pixel colour of a frame of a video every 0.1 seconds"
+        pipenv run python postimage.py "uploads/video/$vidfile" "Random frame from a video sorted by random criteria"
         rm "uploads/video/$vidfile"
       fi
     fi
   fi
 fi
+
+#Sequence of stripes showing the average pixel colour of a frame of a video every 0.1 seconds
