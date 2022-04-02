@@ -37,7 +37,7 @@ sorter.pixel_sorter_middleware()
 
 os.remove(temp_file)
 
-if 'YouTube' in args.video:
+if args.video.startswith('YouTube'):
     delete_file = input('Delete source video file? ')
     if delete_file.lower() == 'y':
         os.remove(args.video)
