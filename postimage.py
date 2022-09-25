@@ -27,7 +27,7 @@ if __name__ == '__main__':
     parser.add_argument('alt', help='Alt text')
     args = parser.parse_args()
 
-    text = f'{os.path.splitext(os.path.basename(args.file))[0]} #glitch'
+    text = f'{os.path.splitext(os.path.basename(args.file))[0]}'
     post_image(args.file, args.alt, text)
 
 

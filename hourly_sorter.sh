@@ -6,9 +6,14 @@ MAX_CHANGED_PIXELS=103680
 NUM_CHECK='^[0-9]+$'
 minute=$1
 
+if nc -z yaffle 22 -w 2
+then
+  exit
+fi
+
 if ! [[ $minute =~ $NUM_CHECK ]]
 then
-   minute=0
+  minute=0
 fi
 
 if [[ $minute -lt 0 ]]
@@ -65,7 +70,7 @@ then
     if [[ $process == 1 ]]
     then
       filename=$(basename "$last_shot")
-      pipenv run python sort_image.py "$last_shot" "A screenshot with pixels sorted by random criteria" "${filename:0:4}-${filename:4:2}-${filename:6:2} ${filename:8:2}:${filename:10:2}:${filename:12:2} #glitch"
+      pipenv run python sort_image.py "$last_shot" "A screenshot with pixels sorted by random criteria" "${filename:0:4}-${filename:4:2}-${filename:6:2} ${filename:8:2}:${filename:10:2}:${filename:12:2}"
 
       # Log the sorted file
       echo "$last_shot" > last_sorted.dat
