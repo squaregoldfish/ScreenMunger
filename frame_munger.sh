@@ -1,3 +1,3 @@
 #!/bin/bash
 
-pipenv run python frame_munger.py "$1"
+pipenv --bare run python -W ignore frame_munger.py "$1"
