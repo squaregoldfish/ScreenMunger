@@ -5,6 +5,7 @@ import FrameColours
 from moviepy.editor import VideoFileClip
 import numpy as np
 from awesome_progress_bar import ProgressBar
+import cv2
 
 OUT_DIR='./uploads/video'
 
@@ -32,6 +33,13 @@ for frame in extract_frames:
     current_frame += 1
 
 output.write_image(floor(frame_count / 8), os.path.join(OUT_DIR, f'{title}.png'))
+
+vid = cv2.VideoCapture(args.video)
+fps = vid.get(cv2.CAP_PROP_FPS)
+if fps > 0:
+    frame_count = int(vid.get(cv2.CAP_PROP_FRAME_COUNT))
+    length = (int(floor(frame_count / fps))) / 3600
+    print(f'Video length: {length:.2f}')
 
 if args.video.startswith('YouTube'):
     delete_file = input('Delete source video file? ')

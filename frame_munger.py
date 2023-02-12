@@ -5,6 +5,7 @@ from moviepy.editor import VideoFileClip
 import tempfile
 import cv2
 from PixelSorter import PixelSorter
+import math
 
 
 OUT_DIR='./uploads/video'
@@ -36,6 +37,13 @@ sorter = PixelSorter.PixelSorter(temp_file, os.path.join(OUT_DIR, f'{title}.png'
 sorter.pixel_sorter_middleware()
 
 os.remove(temp_file)
+
+vid = cv2.VideoCapture(args.video)
+fps = vid.get(cv2.CAP_PROP_FPS)
+if fps > 0:
+    frame_count = int(vid.get(cv2.CAP_PROP_FRAME_COUNT))
+    length = (int(math.floor(frame_count / fps))) / 3600
+    print(f'Video length: {length:.2f}')
 
 if args.video.startswith('YouTube'):
     delete_file = input('Delete source video file? ')
