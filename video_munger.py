@@ -4,7 +4,7 @@ from math import floor
 import FrameColours
 from moviepy.editor import VideoFileClip
 import numpy as np
-from awesome_progress_bar import ProgressBar
+from tqdm import tqdm
 import cv2
 
 OUT_DIR='./uploads/video'
@@ -25,12 +25,12 @@ extract_frames = np.arange(0, floor(video_clip.duration), 0.1)
 frame_count = len(extract_frames)
 output = FrameColours.FrameColours(frame_count)
 
-bar = ProgressBar(frame_count, prefix=title, use_spinner=False, use_eta=True)
-current_frame = 0
-for frame in extract_frames:
-    output.set_frame(current_frame, FrameColours.average_pixel(video_clip.get_frame(frame), True))
-    bar.iter()
-    current_frame += 1
+with tqdm(total=frame_count, desc=title, unit="frame", dynamic_ncols=True) as bar:
+    current_frame = 0
+    for frame in extract_frames:
+        output.set_frame(current_frame, FrameColours.average_pixel(video_clip.get_frame(frame), True))
+        bar.update()
+        current_frame += 1
 
 output.write_image(floor(frame_count / 8), os.path.join(OUT_DIR, f'{title}.png'))
 
