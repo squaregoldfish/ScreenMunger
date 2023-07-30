@@ -46,6 +46,14 @@ if fps > 0:
     print(f'Video length: {length:.2f}')
 
 if args.video.startswith('YouTube'):
+    size = os.path.getsize(args.video)
+    if size >= 1073741824:
+        gb = size / 1073741824
+        print(f'{gb:.2f} Gb')
+    else:
+        mb = size / 1048576
+        print(f'{mb:.2f} Mb')
+
     delete_file = input('Delete source video file? ')
     if delete_file.lower() == 'y':
         os.remove(args.video)
