@@ -45,7 +45,7 @@ if fps > 0:
     length = (int(math.floor(frame_count / fps))) / 3600
     print(f'Video length: {length:.2f}')
 
-if args.video.startswith('YouTube'):
+if args.video.startswith('YouTube') or args.video.startswith('Vimeo'):
     size = os.path.getsize(args.video)
     if size >= 1073741824:
         gb = size / 1073741824
