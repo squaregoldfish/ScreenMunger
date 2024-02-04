@@ -9,6 +9,7 @@ opencv-python = "*"
 moviepy = "*"
 numpy = "*"
 awesome-progress-bar = "*"
+"mastodon.py" = "*"
 
 [dev-packages]
 
