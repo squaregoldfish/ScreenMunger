@@ -6,11 +6,6 @@ MAX_CHANGED_PIXELS=103680
 NUM_CHECK='^[0-9]+$'
 minute=$1
 
-if nc -z yaffle 22 -w 2
-then
-  exit
-fi
-
 if ! [[ $minute =~ $NUM_CHECK ]]
 then
   minute=0
