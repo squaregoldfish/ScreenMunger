@@ -10,6 +10,7 @@ moviepy = "*"
 numpy = "*"
 awesome-progress-bar = "*"
 "mastodon.py" = "*"
+toml = "*"
 
 [dev-packages]
 
