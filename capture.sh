@@ -12,6 +12,9 @@ then
         *non-blanked*)
             do_capture=1
             ;;
+        *"no saver status"*)
+            do_capture=1
+            ;;
         *)
             do_capture=0
     esac
