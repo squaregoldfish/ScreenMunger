@@ -24,7 +24,7 @@ video_clip = VideoFileClip(args.video)
 frame = video_clip.get_frame(random.uniform(0, video_clip.duration))
 # Frame is RBG - needs to be RGB
 frame = frame[...,::-1].copy()
-temp_file = os.path.join(tempfile.gettempdir(), f'{title}.png')
+temp_file = os.path.join(tempfile.gettempdir(), f'{title}.jpg')
 cv2.imwrite(temp_file, frame)
 
 sort_criteria = random.choice(['C', 'L', 'H', 'B'])
@@ -33,7 +33,7 @@ direction = random.choice(['H', 'V'])
 reverse = random.choice(['T', 'F'])
 
 # Perform the sort
-sorter = PixelSorter.PixelSorter(temp_file, os.path.join(OUT_DIR, f'{title}.png'), sort_criteria, sort_mode, direction, reverse)
+sorter = PixelSorter.PixelSorter(temp_file, os.path.join(OUT_DIR, f'{title}.jpg'), sort_criteria, sort_mode, direction, reverse)
 sorter.pixel_sorter_middleware()
 
 os.remove(temp_file)

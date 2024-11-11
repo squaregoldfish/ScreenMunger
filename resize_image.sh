@@ -1,3 +1,3 @@
-convert -resize x720 "$1" tmp.png
-mv tmp.png "$1"
+convert -resize x720 -quality 90 "$1" tmp.jpg
+mv tmp.jpg "$1"
 
