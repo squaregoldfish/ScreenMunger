@@ -40,7 +40,7 @@ fi
 # Get the latest image for the specified minute
 # We won't cross the day threshold
 last_shot_dir="uploads/$(date '+%Y%m%d')"
-last_shot=$(find "${last_shot_dir}"/*"${minute}"00.jpg|sort|tail -1)
+last_shot=$(find "${last_shot_dir}"/*"${minute}"00.png|sort|tail -1)
 
 # If there's an image
 if [ -n "$last_shot" ]
