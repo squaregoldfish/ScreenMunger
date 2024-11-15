@@ -32,7 +32,7 @@ with tqdm(total=frame_count, desc=title, unit="frame", dynamic_ncols=True) as ba
         bar.update()
         current_frame += 1
 
-output.write_image(floor(frame_count / 8), os.path.join(OUT_DIR, f'{title}.png'))
+output.write_image(floor(frame_count / 8), os.path.join(OUT_DIR, f'{title}.jpg'))
 
 vid = cv2.VideoCapture(args.video)
 fps = vid.get(cv2.CAP_PROP_FPS)

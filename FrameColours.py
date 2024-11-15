@@ -27,4 +27,4 @@ class FrameColours:
         final_height_ratio = 1 if ratio_height < 720 else 720 / ratio_height
 
         image = cv2.resize(self.pixels, (floor(self.frames * final_height_ratio), 720), interpolation=cv2.INTER_CUBIC)
-        cv2.imwrite(file, image, [cv2.IMWRITE_PNG_COMPRESSION, 9])
+        cv2.imwrite(file, image, [cv2.IMWRITE_JPEG_QUALITY, 90])
