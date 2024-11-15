@@ -24,7 +24,7 @@ reverse = random.choice(['T', 'F'])
 
 # Perform the sort
 temp_file = os.path.join(tempfile.gettempdir(), f'{os.path.basename(args.file).split(".")[0]}.jpg')
-sorter = PixelSorter.PixelSorter(args.file, temp_file, sort_criteria, sort_mode, direction, reverse)
+sorter = PixelSorter(args.file, temp_file, sort_criteria, sort_mode, direction, reverse)
 sorter.pixel_sorter_middleware()
 
 # Post the sorted image
