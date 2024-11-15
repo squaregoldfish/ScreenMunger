@@ -7,12 +7,12 @@ do_capture=1
 
 if command -v xscreensaver-command &> /dev/null
 then
-    status=`xscreensaver-command -time`
+    status=`xscreensaver-command -time 2>&1`
     case "$status" in
         *non-blanked*)
             do_capture=1
             ;;
-        *"no saver status"*)
+        *root*)
             do_capture=1
             ;;
         *)
