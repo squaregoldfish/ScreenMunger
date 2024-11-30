@@ -18,7 +18,7 @@ def post_image(filename, alt, toot):
         )
 
     media_id = mastodon.media_post(filename, description=alt)
-    mastodon.status_post(toot, media_ids=media_id, visibility='public')
+    mastodon.status_post(f'{toot}\n#glitch', media_ids=media_id, visibility='public')
 
 
 if __name__ == '__main__':
