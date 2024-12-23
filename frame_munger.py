@@ -33,7 +33,7 @@ direction = random.choice(['H', 'V'])
 reverse = random.choice(['T', 'F'])
 
 # Perform the sort
-sorter = PixelSorter.PixelSorter(temp_file, os.path.join(OUT_DIR, f'{title}.jpg'), sort_criteria, sort_mode, direction, reverse)
+sorter = PixelSorter(temp_file, os.path.join(OUT_DIR, f'{title}.jpg'), sort_criteria, sort_mode, direction, reverse)
 sorter.pixel_sorter_middleware()
 
 os.remove(temp_file)
