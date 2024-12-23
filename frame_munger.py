@@ -1,10 +1,10 @@
 import argparse
 import os
 import random
-from moviepy.editor import VideoFileClip
+from moviepy import VideoFileClip
 import tempfile
 import cv2
-from PixelSorter import PixelSorter
+import PixelSorter
 import math
 
 
