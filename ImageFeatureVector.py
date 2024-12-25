@@ -147,6 +147,37 @@ class ImageFeatureVector(object):
 
         self.__process_img__()
 
+    def frequency_full(self):
+        frequency = dict()
+        for row in range(self.ROWS):
+            for col in range(self.COLS):
+                pixel = pixel_to_hex(self.img[row, col])
+                if pixel not in frequency.keys():
+                    frequency[pixel] = 1
+                else:
+                    frequency[pixel] = frequency[pixel] + 1
+
+        frequency = dict(sorted(frequency.items(), key=lambda item: item[1], reverse=not self.reverse))
+        
+        final_image = np.zeros((self.ROWS, self.COLS, 3), dtype=np.short)
+
+        current_pixel = 0
+        for colour in frequency.keys():
+
+            pixel_colour = hex_to_pixel(colour)
+
+            for i in range(frequency[colour]):
+                if self.direction == 'V':
+                    pixel_x = current_pixel % self.ROWS
+                    pixel_y = floor(current_pixel / self.ROWS)
+                else:
+                    pixel_x = floor(current_pixel / self.COLS)
+                    pixel_y = current_pixel % self.COLS
+
+                current_pixel += 1
+                final_image[pixel_x, pixel_y] = pixel_colour
+        return final_image
+
     def get_color_channel(self):
         """ docstring """
         return self.r, self.g, self.b
@@ -168,37 +199,8 @@ class ImageFeatureVector(object):
         self.COLS = self.get_no_cols()
         self.ROWS = self.get_no_rows()
         
-        if self.sort_criteria in ['FT', 'FL']:
-            frequency = dict()
-            for row in range(self.ROWS):
-                for col in range(self.COLS):
-                    pixel = pixel_to_hex(self.img[row, col])
-                    if pixel not in frequency.keys():
-                        frequency[pixel] = 1
-                    else:
-                        frequency[pixel] = frequency[pixel] + 1
-
-            frequency = dict(sorted(frequency.items(), key=lambda item: item[1], reverse=not self.reverse))
-            
-            final_image = np.zeros((self.ROWS, self.COLS, 3), dtype=np.short)
-
-            current_pixel = 0
-            for colour in frequency.keys():
-
-                pixel_colour = hex_to_pixel(colour)
-
-                for i in range(frequency[colour]):
-                    if self.direction == 'V':
-                        pixel_x = current_pixel % self.ROWS
-                        pixel_y = floor(current_pixel / self.ROWS)
-                    else:
-                        pixel_x = floor(current_pixel / self.COLS)
-                        pixel_y = current_pixel % self.COLS
-
-                    current_pixel += 1
-                    final_image[pixel_x, pixel_y] = pixel_colour
-
-
+        if self.sort_criteria == 'FT':
+            final_image = self.frequency_full();
         else:
             # If we're doing Vertical, rotate the image by 90 degrees
             if self.direction == 'V':

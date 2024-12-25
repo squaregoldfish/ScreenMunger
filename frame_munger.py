@@ -27,7 +27,7 @@ frame = frame[...,::-1].copy()
 temp_file = os.path.join(tempfile.gettempdir(), f'{title}.jpg')
 cv2.imwrite(temp_file, frame)
 
-sort_criteria = random.choice(['C', 'L', 'H', 'B'])
+sort_criteria = random.choice(['C', 'L', 'H', 'B', 'FT'])
 sort_mode = random.choice(['S', 'M'])
 direction = random.choice(['H', 'V'])
 reverse = random.choice(['T', 'F'])
