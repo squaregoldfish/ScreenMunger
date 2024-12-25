@@ -20,12 +20,16 @@ class PixelSorter(object):
 
         valid = True
         """ docstring """
-        if not (self.sort_criteria in ['C', 'L', 'H', 'B']):
+        
+        # Chroma, Luminance, Hue, Brightness, Frequency Total, Frequency Line
+        if not (self.sort_criteria in ['C', 'L', 'H', 'B', 'FT', 'FL']):
             valid = False
 
+        # M = Mirror, S = Normal
         if not (self.sort_mode in ['S', 'M']):
             valid = False
 
+        # Horizontal/Vertical
         if not (self.direction in ['H', 'V']):
             valid = False
 

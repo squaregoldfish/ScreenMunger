@@ -5,7 +5,13 @@ from statistics import mean
 from math import floor
 from multiprocessing import shared_memory, Pool
 from itertools import repeat
+import math
 
+def pixel_to_hex(pixel):
+    return f'{pixel[2]:02x}{pixel[1]:02x}{pixel[0]:02x}'
+
+def hex_to_pixel(hex):
+    return [int(hex[4:6], 16), int(hex[2:4], 16), int(hex[0:2], 16)]
 
 def get_pixel_hue(r, g, b):
     # TODO: fix
@@ -36,7 +42,6 @@ def get_pixel_chr(r, g, b):
 
 def get_pixel_lum(r, g, b):         # luminance
     return r*0.3 + g*0.59 + b*0.11
-
 
 def get_pixel_bri(r, g, b):         # brightness
     return round(mean([r, g, b]))
@@ -160,59 +165,92 @@ class ImageFeatureVector(object):
         if np.shape(self.img)[1] % 2 == 1:
             self.img = np.delete(self.img, 0, axis=1)
 
-        # If we're doing Vertical, rotate the image by 90 degrees
-        if self.direction == 'V':
-            self.img = cv2.rotate(self.img, cv2.ROTATE_90_CLOCKWISE)
-
-        original_image = self.img.copy()
-        original_image[:, :, 0] = self.img[:, :, 2]
-        original_image[:, :, 2] = self.img[:, :, 0]
         self.COLS = self.get_no_cols()
         self.ROWS = self.get_no_rows()
-        b, g, r = cv2.split(self.img)
         
-        try:
-            self.b_shm = shared_memory.SharedMemory(name='b_shm', create=True, size=b.nbytes)
-            self.b = np.ndarray(b.shape, dtype=b.dtype, buffer=self.b_shm.buf)
-            self.b[:] = b[:]
-            self.channel_shape = b.shape
+        if self.sort_criteria in ['FT', 'FL']:
+            frequency = dict()
+            for row in range(self.ROWS):
+                for col in range(self.COLS):
+                    pixel = pixel_to_hex(self.img[row, col])
+                    if pixel not in frequency.keys():
+                        frequency[pixel] = 1
+                    else:
+                        frequency[pixel] = frequency[pixel] + 1
 
-            self.g_shm = shared_memory.SharedMemory(name='g_shm', create=True, size=g.nbytes)
-            self.g = np.ndarray(g.shape, dtype=g.dtype, buffer=self.g_shm.buf)
-            self.g[:] = g[:]
+            frequency = dict(sorted(frequency.items(), key=lambda item: item[1], reverse=not self.reverse))
+            
+            final_image = np.zeros((self.ROWS, self.COLS, 3), dtype=np.short)
 
-            self.r_shm = shared_memory.SharedMemory(name='r_shm', create=True, size=r.nbytes)
-            self.r = np.ndarray(r.shape, dtype=r.dtype, buffer=self.r_shm.buf)
-            self.r[:] = r[:]
+            current_pixel = 0
+            for colour in frequency.keys():
 
-            if self.sort_mode == 'S':
-                with Pool() as pool:
-                    pool.starmap(process_row_smode,
-                        zip(range(np.shape(self.b)[0]), repeat(self.channel_shape), repeat(self.COLS), repeat(self.sort_criteria), repeat(self.reverse)))
-            else:
-                half_cols = int(self.COLS / 2)
-                with Pool() as pool:
-                    pool.starmap(process_row_mmode,
-                        zip(range(np.shape(self.b)[0]), repeat(self.channel_shape), repeat(half_cols), repeat(self.sort_criteria), repeat(self.reverse)))
+                pixel_colour = hex_to_pixel(colour)
 
-            final_image = cv2.merge((self.b, self.g, self.r))
+                for i in range(frequency[colour]):
+                    if self.direction == 'V':
+                        pixel_x = current_pixel % self.ROWS
+                        pixel_y = floor(current_pixel / self.ROWS)
+                    else:
+                        pixel_x = floor(current_pixel / self.COLS)
+                        pixel_y = current_pixel % self.COLS
 
-            # If we're doing Vertical, rotate the image back
+                    current_pixel += 1
+                    final_image[pixel_x, pixel_y] = pixel_colour
+
+
+        else:
+            # If we're doing Vertical, rotate the image by 90 degrees
             if self.direction == 'V':
-                final_image = cv2.rotate(final_image, cv2.ROTATE_90_COUNTERCLOCKWISE)
+                self.img = cv2.rotate(self.img, cv2.ROTATE_90_CLOCKWISE)
 
-            cv2.imwrite(self.dest_img_path, final_image, [cv2.IMWRITE_JPEG_QUALITY, 90])
-        finally:
-            # Release shared memory
-            del self.b
-            self.b_shm.close()
-            self.b_shm.unlink()
-            del self.g
-            self.g_shm.close()
-            self.g_shm.unlink()
-            del self.r
-            self.r_shm.close()
-            self.r_shm.unlink()
+            self.COLS = self.get_no_cols()
+            self.ROWS = self.get_no_rows()
+
+            try:
+                b, g, r = cv2.split(self.img)
+                self.b_shm = shared_memory.SharedMemory(name='b_shm', create=True, size=b.nbytes)
+                self.b = np.ndarray(b.shape, dtype=b.dtype, buffer=self.b_shm.buf)
+                self.b[:] = b[:]
+                self.channel_shape = b.shape
+
+                self.g_shm = shared_memory.SharedMemory(name='g_shm', create=True, size=g.nbytes)
+                self.g = np.ndarray(g.shape, dtype=g.dtype, buffer=self.g_shm.buf)
+                self.g[:] = g[:]
+
+                self.r_shm = shared_memory.SharedMemory(name='r_shm', create=True, size=r.nbytes)
+                self.r = np.ndarray(r.shape, dtype=r.dtype, buffer=self.r_shm.buf)
+                self.r[:] = r[:]
+
+                if self.sort_mode == 'S':
+                    with Pool() as pool:
+                        pool.starmap(process_row_smode,
+                            zip(range(np.shape(self.b)[0]), repeat(self.channel_shape), repeat(self.COLS), repeat(self.sort_criteria), repeat(self.reverse)))
+                else:
+                    half_cols = int(self.COLS / 2)
+                    with Pool() as pool:
+                        pool.starmap(process_row_mmode,
+                            zip(range(np.shape(self.b)[0]), repeat(self.channel_shape), repeat(half_cols), repeat(self.sort_criteria), repeat(self.reverse)))
+
+                final_image = cv2.merge((self.b, self.g, self.r))
+
+                # If we're doing Vertical, rotate the image back
+                if self.direction == 'V':
+                    final_image = cv2.rotate(final_image, cv2.ROTATE_90_COUNTERCLOCKWISE)
+
+            finally:
+                # Release shared memory
+                del self.b
+                self.b_shm.close()
+                self.b_shm.unlink()
+                del self.g
+                self.g_shm.close()
+                self.g_shm.unlink()
+                del self.r
+                self.r_shm.close()
+                self.r_shm.unlink()
+
+        cv2.imwrite(self.dest_img_path, final_image, [cv2.IMWRITE_JPEG_QUALITY, 90])
 
     def get_no_rows(self):
         return self.img.shape[0]
