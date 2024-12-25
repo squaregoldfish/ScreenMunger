@@ -10,7 +10,8 @@ import math
 
 OUT_DIR='./uploads/video'
 
-parser = argparse.ArgumentParser(description='Generate an average pixel image for each frame of a video')
+parser = argparse.ArgumentParser(description='Munge a random frame from a video')
+parser.add_argument('--no-swap', action='store_true', help='Do not allow the swap mode')
 parser.add_argument('video', help='Video file')
 args = parser.parse_args()
 
@@ -27,7 +28,11 @@ frame = frame[...,::-1].copy()
 temp_file = os.path.join(tempfile.gettempdir(), f'{title}.jpg')
 cv2.imwrite(temp_file, frame)
 
-sort_criteria = random.choice(['C', 'L', 'H', 'B', 'FT', 'FL'])
+if args.no_swap:
+    sort_criteria = random.choice(['C', 'L', 'H', 'B', 'FT', 'FL'])
+else:
+    sort_criteria = random.choice(['C', 'L', 'H', 'B', 'FT', 'FL', 'S'])
+
 sort_mode = random.choice(['S', 'M'])
 direction = random.choice(['H', 'V'])
 reverse = random.choice(['T', 'F'])

@@ -70,7 +70,7 @@ then
     if [[ $process == 1 ]]
     then
       filename=$(basename "$last_shot")
-      pipenv run python sort_image.py "$last_shot" "A screenshot with pixels sorted by random criteria" "${filename:0:4}-${filename:4:2}-${filename:6:2} ${filename:8:2}:${filename:10:2}:${filename:12:2}"
+      pipenv run python sort_image.py --no-swap "$last_shot" "A screenshot with pixels sorted by random criteria" "${filename:0:4}-${filename:4:2}-${filename:6:2} ${filename:8:2}:${filename:10:2}:${filename:12:2}"
 
       # Log the sorted file
       echo "$last_shot" > last_sorted.dat

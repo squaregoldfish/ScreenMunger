@@ -6,6 +6,7 @@ from math import floor
 from multiprocessing import shared_memory, Pool
 from itertools import repeat
 import math
+from random import shuffle
 
 def pixel_to_hex(pixel):
     return f'{pixel[2]:02x}{pixel[1]:02x}{pixel[0]:02x}'
@@ -214,6 +215,26 @@ class ImageFeatureVector(object):
 
         return final_image
 
+    def swap(self):
+        final_image = np.zeros((self.ROWS, self.COLS, 3), dtype=np.short)
+
+        colours = set()
+        for row in range(self.ROWS):
+            for col in range(self.COLS):
+                colours.add(pixel_to_hex(self.img[row, col]))
+
+        source = list(colours)
+        dest = source.copy()
+        shuffle(dest)
+
+        lookup = dict(zip(source, dest))
+
+        for row in range(self.ROWS):
+            for col in range(self.COLS):
+                final_image[row, col] = hex_to_pixel(lookup[pixel_to_hex(self.img[row, col])])
+
+        return final_image
+
 
     def get_color_channel(self):
         """ docstring """
@@ -240,6 +261,8 @@ class ImageFeatureVector(object):
             final_image = self.frequency_full()
         elif self.sort_criteria == 'FL':
             final_image = self.frequency_lines()
+        elif self.sort_criteria == 'S':
+            final_image = self.swap()
         else:
             # If we're doing Vertical, rotate the image by 90 degrees
             if self.direction == 'V':
