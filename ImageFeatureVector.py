@@ -178,6 +178,43 @@ class ImageFeatureVector(object):
                 final_image[pixel_x, pixel_y] = pixel_colour
         return final_image
 
+    def frequency_lines(self):
+        final_image = np.zeros((self.ROWS, self.COLS, 3), dtype=np.short)
+
+        loop_limit = self.ROWS if self.direction == 'H' else self.COLS
+
+        for i in range(loop_limit):
+            if self.direction == 'H':
+                line = self.img[i, :, :]
+            else:
+                line = self.img[:, i, :]
+
+
+            frequency = dict()
+            for j in range(np.shape(line)[0]):
+                pixel = pixel_to_hex(line[j])
+                if pixel not in frequency.keys():
+                    frequency[pixel] = 1
+                else:
+                    frequency[pixel] = frequency[pixel] + 1
+
+            frequency = dict(sorted(frequency.items(), key=lambda item: item[1], reverse=not self.reverse))
+
+            current_pixel = 0
+            for colour in frequency.keys():
+                pixel_colour = hex_to_pixel(colour)
+
+                for pixel in range(frequency[colour]):
+                    if self.direction == 'H':
+                        final_image[i, current_pixel] = pixel_colour
+                    else:
+                        final_image[current_pixel, i] = pixel_colour
+
+                    current_pixel += 1
+
+        return final_image
+
+
     def get_color_channel(self):
         """ docstring """
         return self.r, self.g, self.b
@@ -200,7 +237,9 @@ class ImageFeatureVector(object):
         self.ROWS = self.get_no_rows()
         
         if self.sort_criteria == 'FT':
-            final_image = self.frequency_full();
+            final_image = self.frequency_full()
+        elif self.sort_criteria == 'FL':
+            final_image = self.frequency_lines()
         else:
             # If we're doing Vertical, rotate the image by 90 degrees
             if self.direction == 'V':
