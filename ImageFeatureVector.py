@@ -6,7 +6,8 @@ from math import floor
 from multiprocessing import shared_memory, Pool
 from itertools import repeat
 import math
-from random import shuffle
+from random import shuffle, randrange
+from collections import deque
 
 def pixel_to_hex(pixel):
     return f'{pixel[2]:02x}{pixel[1]:02x}{pixel[0]:02x}'
@@ -235,6 +236,40 @@ class ImageFeatureVector(object):
 
         return final_image
 
+    def rot(self):
+        final_image = np.zeros((self.ROWS, self.COLS, 3), dtype=np.short)
+
+        lines = self.ROWS if self.direction == 'H' else self.COLS
+        segment_limit = int(lines / 20)
+        rotation_limit = self.COLS if self.direction == 'H' else self.ROWS
+
+        lines_complete = 0
+
+        while lines_complete < lines:
+            segment = randrange(segment_limit) + 1
+
+            if lines_complete + segment > lines:
+                segment = lines - lines_complete
+
+            shift = randrange(rotation_limit)
+            for i in range(lines_complete, lines_complete + segment):
+                if self.direction == 'H':
+                    for j in range(self.COLS):
+                        target = j + shift
+                        if target > (self.COLS - 1):
+                            target = target - self.COLS
+                        final_image[i, j] = self.img[i, target]
+                else:
+                    for j in range(self.ROWS):
+                        target = j + shift
+                        if target > (self.ROWS - 1):
+                            target = target - self.ROWS
+                        final_image[j, i] = self.img[target, i]
+
+            lines_complete += segment
+
+        return final_image
+
 
     def get_color_channel(self):
         """ docstring """
@@ -263,6 +298,8 @@ class ImageFeatureVector(object):
             final_image = self.frequency_lines()
         elif self.sort_criteria == 'S':
             final_image = self.swap()
+        elif self.sort_criteria == 'ROT':
+            final_image = self.rot()
         else:
             # If we're doing Vertical, rotate the image by 90 degrees
             if self.direction == 'V':

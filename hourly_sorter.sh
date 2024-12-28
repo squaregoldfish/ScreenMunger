@@ -1,5 +1,5 @@
 #!/bin/bash
-
+source venv/bin/activate
 MAX_CHANGED_PIXELS=103680
 
 # Get the requested minute
