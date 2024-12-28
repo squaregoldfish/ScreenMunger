@@ -2,7 +2,7 @@ import argparse
 import os
 from math import floor
 import FrameColours
-from moviepy.editor import VideoFileClip
+from moviepy import VideoFileClip
 import numpy as np
 from tqdm import tqdm
 import cv2
