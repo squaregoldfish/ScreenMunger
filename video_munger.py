@@ -2,12 +2,23 @@ import argparse
 import os
 from math import floor
 import FrameColours
-from moviepy.editor import VideoFileClip
+from moviepy import VideoFileClip
 import numpy as np
-from tqdm import tqdm
 import cv2
+from multiprocessing import cpu_count, shared_memory, Pool
+from parallelbar.wrappers import add_progress
+from parallelbar import progress_starmap
 
 OUT_DIR='./uploads/video'
+
+def average_frame(frame_time, frame_index):
+    fc_shm = shared_memory.SharedMemory(name='fc_shm')
+    fc = np.ndarray((frame_count, 3), dtype=np.uint8, buffer=fc_shm.buf)
+    fc[frame_index] = FrameColours.average_pixel(video_clip.get_frame(frame_time), True)
+
+    del fc
+    fc_shm.close()
+
 
 parser = argparse.ArgumentParser(description='Generate an average pixel image for each frame of a video')
 parser.add_argument('video', help='Video file')
@@ -23,16 +34,22 @@ video_clip = VideoFileClip(args.video)
 
 extract_frames = np.arange(0, floor(video_clip.duration), 0.1)
 frame_count = len(extract_frames)
-output = FrameColours.FrameColours(frame_count)
 
-with tqdm(total=frame_count, desc=title, unit="frame", dynamic_ncols=True) as bar:
-    current_frame = 0
-    for frame in extract_frames:
-        output.set_frame(current_frame, FrameColours.average_pixel(video_clip.get_frame(frame), True))
-        bar.update()
-        current_frame += 1
+try:
+    frame_colors = np.zeros((frame_count, 3))
+    fc_shm = shared_memory.SharedMemory(name='fc_shm', create=True, size=frame_colors.nbytes)
+    fc = np.ndarray(frame_colors.shape, dtype=np.uint8, buffer=fc_shm.buf)
 
-output.write_image(floor(frame_count / 8), os.path.join(OUT_DIR, f'{title}.jpg'))
+    progress_starmap(average_frame, zip(extract_frames, range(frame_count)), total=frame_count)
+
+    frame_colors[:] = fc[:]
+    output = FrameColours.FrameColours(frame_count)
+    output.set_frames(frame_colors)
+    output.write_image(floor(frame_count / 8), os.path.join(OUT_DIR, f'{title}.jpg'))
+finally:
+    del frame_colors
+    fc_shm.close()
+    fc_shm.unlink()
 
 vid = cv2.VideoCapture(args.video)
 fps = vid.get(cv2.CAP_PROP_FPS)

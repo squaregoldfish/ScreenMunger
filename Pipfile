@@ -10,6 +10,7 @@ numpy = "*"
 awesome-progress-bar = "*"
 "mastodon.py" = "*"
 toml = "*"
+parallelbar = "*"
 
 [dev-packages]
 

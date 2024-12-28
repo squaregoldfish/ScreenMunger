@@ -19,6 +19,10 @@ class FrameColours:
     def set_frame(self, frame, colour):
         self.pixels[:, frame, :] = colour
 
+    def set_frames(self, frames):
+        for f in range(len(frames)):
+            self.set_frame(f, frames[f])
+
     def write_image(self, height, file):
         # Height is 1/8th of width
         ratio_height = self.frames / 8
