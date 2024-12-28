@@ -22,7 +22,11 @@ if custom_title != '':
     title = custom_title
 
 video_clip = VideoFileClip(args.video)
-frame = video_clip.get_frame(random.uniform(0, video_clip.duration))
+frame_pos = random.uniform(0, video_clip.duration)
+minutes = math.floor(frame_pos / 60)
+seconds = frame_pos - (minutes * 60)
+print(f'{minutes}:{seconds:05.2f}')
+frame = video_clip.get_frame(frame_pos)
 # Frame is RBG - needs to be RGB
 frame = frame[...,::-1].copy()
 temp_file = os.path.join(tempfile.gettempdir(), f'{title}.jpg')
