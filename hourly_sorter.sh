@@ -1,5 +1,5 @@
 #!/bin/bash
-
+source venv/bin/activate
 vidfile=`ls -t uploads/video |tail -1`
 if [ -n "$vidfile" ]
 then

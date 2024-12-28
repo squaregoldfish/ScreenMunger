@@ -31,7 +31,7 @@ cv2.imwrite(temp_file, frame)
 if args.no_swap:
     sort_criteria = random.choice(['C', 'L', 'H', 'B', 'FT', 'FL'])
 else:
-    sort_criteria = random.choice(['C', 'L', 'H', 'B', 'FT', 'FL', 'S'])
+    sort_criteria = random.choice(['C', 'L', 'H', 'B', 'FT', 'FL', 'S', 'ROT'])
 
 sort_mode = random.choice(['S', 'M'])
 direction = random.choice(['H', 'V'])

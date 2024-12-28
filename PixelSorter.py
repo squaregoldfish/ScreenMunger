@@ -22,7 +22,7 @@ class PixelSorter(object):
         """ docstring """
         
         # Chroma, Luminance, Hue, Brightness, Frequency Total, Frequency Line
-        if not (self.sort_criteria in ['C', 'L', 'H', 'B', 'FT', 'FL', 'S']):
+        if not (self.sort_criteria in ['C', 'L', 'H', 'B', 'FT', 'FL', 'S', 'ROT']):
             valid = False
 
         # M = Mirror, S = Normal
