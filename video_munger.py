@@ -40,7 +40,7 @@ try:
     fc_shm = shared_memory.SharedMemory(name='fc_shm', create=True, size=frame_colors.nbytes)
     fc = np.ndarray(frame_colors.shape, dtype=np.uint8, buffer=fc_shm.buf)
 
-    progress_starmap(average_frame, zip(extract_frames, range(frame_count)), total=frame_count)
+    progress_starmap(average_frame, zip(extract_frames, range(frame_count)), total=frame_count, n_cpu=int(cpu_count() / 2))
 
     frame_colors[:] = fc[:]
     output = FrameColours.FrameColours(frame_count)
