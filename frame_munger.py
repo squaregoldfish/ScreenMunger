@@ -26,7 +26,7 @@ frame_pos = random.uniform(0, video_clip.duration)
 hours = math.floor(frame_pos / 3600)
 minutes = math.floor((frame_pos - (hours * 3600)) / 60)
 seconds = frame_pos - (hours * 3600) - (minutes * 60)
-print(f'{hours}:{minutes}:{seconds:05.2f}')
+print(f'{hours}:{minutes:02d}:{seconds:05.2f}')
 frame = video_clip.get_frame(frame_pos)
 # Frame is RBG - needs to be RGB
 frame = frame[...,::-1].copy()
