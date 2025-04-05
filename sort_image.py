@@ -11,13 +11,18 @@ from postimage import post_image
 # Command line parsing
 parser = argparse.ArgumentParser(
     description='Sort an image and post it to Mastodon')
+parser.add_argument('--no-swap', action='store_true', help='Do not allow the swap mode')
 parser.add_argument('file', type=str, help='image file')
 parser.add_argument('alt', type=str, help='alt text')
 parser.add_argument('toot', type=str, help='toot text')
 args = parser.parse_args()
 
 # Choose random options for the sorter
-sort_criteria = random.choice(['C', 'L', 'H', 'B'])
+if args.no_swap:
+    sort_criteria = random.choice(['C', 'L', 'H', 'B', 'FT', 'FL'])
+else:
+    sort_criteria = random.choice(['C', 'L', 'H', 'B', 'FT', 'FL', 'S', 'ROT'])
+
 sort_mode = random.choice(['S', 'M'])
 direction = random.choice(['H', 'V'])
 reverse = random.choice(['T', 'F'])

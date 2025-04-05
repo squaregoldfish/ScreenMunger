@@ -4,13 +4,13 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-pixelsorter = {path = "./PixelSorter"}
 opencv-python = "*"
 moviepy = "*"
 numpy = "*"
 awesome-progress-bar = "*"
 "mastodon.py" = "*"
 toml = "*"
+parallelbar = "*"
 
 [dev-packages]
 
