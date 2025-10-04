@@ -1,10 +1,7 @@
-""" docstring """
 from ImageFeatureVector import ImageFeatureVector
 from sys import (argv, exit)
 
 class PixelSorter(object):
-    """ docstring """
-
     def __init__(self, src_img, dest_img, sort_criteria, sort_mode, direction, reverse):
         self.src_img = src_img
         self.dest_img = dest_img
@@ -19,13 +16,15 @@ class PixelSorter(object):
     def __validate_args__(self):
 
         valid = True
-        """ docstring """
         
         # Chroma, Luminance, Hue, Brightness, Frequency Total, Frequency Line
         if not (self.sort_criteria in ['C', 'L', 'H', 'B', 'FT', 'FL', 'S', 'ROT']):
             valid = False
 
         # M = Mirror, S = Normal
+        # For FT and FL:
+        #   S = Sort colours by count
+        #   M = Group colours in the order they are encountered
         if not (self.sort_mode in ['S', 'M']):
             valid = False
 
@@ -39,7 +38,6 @@ class PixelSorter(object):
         return valid
 
     def pixel_sorter_middleware(self):
-        """ docstring """
         ImageFeatureVector(self.src_img, self.dest_img, self.sort_criteria, self.sort_mode, self.direction,
                            True if self.reverse == 'T' else False)
 

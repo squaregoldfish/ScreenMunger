@@ -1,4 +1,3 @@
-""" docstring """
 import cv2
 import numpy as np
 from statistics import mean
@@ -123,7 +122,6 @@ def process_row_mmode(i, shape, half_cols, sort_criteria, reverse):
 
 
 class ImageFeatureVector(object):
-    """ docstring """
     def __init__(self, img_name, dest_img_path, sort_criteria, sort_mode, direction, reverse):
         self.img_name = img_name
         self.dest_img_path = dest_img_path
@@ -159,7 +157,10 @@ class ImageFeatureVector(object):
                 else:
                     frequency[pixel] = frequency[pixel] + 1
 
-        frequency = dict(sorted(frequency.items(), key=lambda item: item[1], reverse=not self.reverse))
+        if self.sort_mode == 'S':
+            frequency = dict(sorted(frequency.items(), key=lambda item: item[1], reverse=not self.reverse))
+        else:
+            frequency = dict(frequency.items())
         
         final_image = np.zeros((self.ROWS, self.COLS, 3), dtype=np.short)
 
@@ -200,7 +201,10 @@ class ImageFeatureVector(object):
                 else:
                     frequency[pixel] = frequency[pixel] + 1
 
-            frequency = dict(sorted(frequency.items(), key=lambda item: item[1], reverse=not self.reverse))
+            if self.sort_mode == 'S':
+                frequency = dict(sorted(frequency.items(), key=lambda item: item[1], reverse=not self.reverse))
+            else:
+                frequency = dict(frequency.items())
 
             current_pixel = 0
             for colour in frequency.keys():
@@ -272,7 +276,6 @@ class ImageFeatureVector(object):
 
 
     def get_color_channel(self):
-        """ docstring """
         return self.r, self.g, self.b
 
     def __process_img__(self):
