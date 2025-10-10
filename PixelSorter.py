@@ -24,7 +24,7 @@ class PixelSorter(object):
         # M = Mirror, S = Normal
         # For FT and FL:
         #   S = Sort colours by count
-        #   M = Group colours in the order they are encountered
+        #   M = Group colours in random order
         if not (self.sort_mode in ['S', 'M']):
             valid = False
 

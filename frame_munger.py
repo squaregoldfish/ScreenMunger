@@ -34,7 +34,7 @@ temp_file = os.path.join(tempfile.gettempdir(), f'{title}.jpg')
 cv2.imwrite(temp_file, frame)
 
 if args.no_swap:
-    sort_criteria = random.choice(['C', 'L', 'H', 'B', 'FT', 'FL'])
+    sort_criteria = random.choice(['C', 'L', 'H', 'B'])
 else:
     sort_criteria = random.choice(['C', 'L', 'H', 'B', 'FT', 'FL', 'S', 'ROT'])
 
