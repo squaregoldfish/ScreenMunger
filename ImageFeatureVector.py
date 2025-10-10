@@ -160,7 +160,9 @@ class ImageFeatureVector(object):
         if self.sort_mode == 'S':
             frequency = dict(sorted(frequency.items(), key=lambda item: item[1], reverse=not self.reverse))
         else:
-            frequency = dict(frequency.items())
+            freq_list = list(frequency.items())
+            shuffle(freq_list)
+            frequency = dict(freq_list)
         
         final_image = np.zeros((self.ROWS, self.COLS, 3), dtype=np.short)
 
@@ -204,7 +206,9 @@ class ImageFeatureVector(object):
             if self.sort_mode == 'S':
                 frequency = dict(sorted(frequency.items(), key=lambda item: item[1], reverse=not self.reverse))
             else:
-                frequency = dict(frequency.items())
+                freq_list = list(frequency.items())
+                shuffle(freq_list)
+                frequency = dict(freq_list)
 
             current_pixel = 0
             for colour in frequency.keys():
